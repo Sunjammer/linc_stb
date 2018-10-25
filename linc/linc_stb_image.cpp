@@ -14,7 +14,9 @@ namespace linc {
         //forward
 
         Dynamic to_image_data(Array<unsigned char> bytes, int w, int h, int comp, int req_comp);
+        Dynamic to_image_dataf(Array<float> floats, int w, int h, int comp, int req_comp);
         Array<unsigned char> to_haxe_bytes(unsigned char* image_bytes, int length);
+        Array<float> to_haxe_floats(float* image_floats, int length);
         Dynamic to_image_info(int w, int h, int comp);
 
             //fudge this to cause a recompile when stb_image.h updates
@@ -85,6 +87,28 @@ namespace linc {
 
         } //load
 
+        
+        //loadf
+
+        Dynamic loadf(char const *filename, int req_comp) {
+
+            int w = 0;
+            int h = 0;
+            int comp = 0;
+
+            float* image_floats = stbi_loadf(filename, &w, &h, &comp, req_comp);
+
+            if(!image_floats) return null();
+
+            if(req_comp == 0)
+                req_comp = comp;
+
+            Array<float> floats = to_haxe_floats(image_floats, w * h * req_comp);
+
+            return to_image_dataf(floats, w, h, comp, req_comp);
+
+        } //loadf
+
         Dynamic load_from_memory(Array<unsigned char> src_bytes, int src_length, int req_comp) {
 
             int w = 0;
@@ -106,7 +130,7 @@ namespace linc {
 
     //helpers
 
-            //note this calls stb_image_free on the image_bytes
+        //note this calls stb_image_free on the image_bytes
         Array<unsigned char> to_haxe_bytes(unsigned char* image_bytes, int length) {
 
             Array<unsigned char> haxe_bytes = new Array_obj<unsigned char>(length,length);
@@ -117,7 +141,18 @@ namespace linc {
 
             return haxe_bytes;
 
-        } //to_haxe_bytes
+        } //to_haxe_floats
+        Array<float> to_haxe_floats(float* image_floats, int length) {
+
+            Array<float> haxe_floats = new Array_obj<float>(length,0);
+
+            memcpy(haxe_floats->GetBase(), image_floats, length);
+
+            stbi_image_free(image_floats);
+
+            return haxe_floats;
+
+        } //to_haxe_floats
 
         Dynamic to_image_info(int w, int h, int comp) {
 
@@ -144,6 +179,20 @@ namespace linc {
             return result;
 
         } //to_image_data
+
+        Dynamic to_image_dataf(Array<float> floats, int w, int h, int comp, int req_comp) {
+
+            hx::Anon result = hx::Anon_obj::Create();
+
+                result->Add(HX_CSTRING("w"), w);
+                result->Add(HX_CSTRING("h"), h);
+                result->Add(HX_CSTRING("comp"), comp);
+                result->Add(HX_CSTRING("req_comp"), req_comp);
+                result->Add(HX_CSTRING("pixels"), floats);
+
+            return result;
+
+        } //to_image_dataf
 
     } //stb_image namespace
 

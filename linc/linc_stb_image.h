@@ -14,6 +14,7 @@ namespace linc {
         extern Dynamic info_from_memory(Array<unsigned char> src_bytes, int src_length);
 
         extern Dynamic load(char const *filename, int req_comp);
+        extern Dynamic loadf(char const *filename, int req_comp);
         extern Dynamic load_from_memory(Array<unsigned char> src_bytes, int src_length, int req_comp);
 
     } //stb_image namespace
