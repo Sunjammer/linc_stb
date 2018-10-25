@@ -9,12 +9,12 @@ typedef StbImageInfo = {
     var comp: Int;
 } //StbImageInfo
 
-typedef StbImageData = {
+typedef StbImageData<T> = {
 
     > StbImageInfo,
 
     var req_comp: Int;
-    var bytes: BytesData;
+    var pixels: T;
 
 } //StbImageData
 
@@ -39,10 +39,10 @@ extern class Image {
     //load
 
         @:native("linc::stb_image::load")
-        static function load(filename:String, req_comp:Int = 0) : StbImageData;
+        static function load(filename:String, req_comp:Int = 0) : StbImageData<BytesData>;
 
         @:native("linc::stb_image::load_from_memory")
-        static function load_from_memory(bytes:BytesData, length:Int, req_comp:Int = 0) : StbImageData;
+        static function load_from_memory(bytes:BytesData, length:Int, req_comp:Int = 0) : StbImageData<BytesData>;
 
         // load_from_callbacks
 

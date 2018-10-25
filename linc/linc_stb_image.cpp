@@ -139,7 +139,7 @@ namespace linc {
                 result->Add(HX_CSTRING("h"), h);
                 result->Add(HX_CSTRING("comp"), comp);
                 result->Add(HX_CSTRING("req_comp"), req_comp);
-                result->Add(HX_CSTRING("bytes"), bytes);
+                result->Add(HX_CSTRING("pixels"), bytes);
 
             return result;
 
