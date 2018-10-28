@@ -16,6 +16,7 @@ namespace linc {
         Dynamic to_image_data(Array<unsigned char> bytes, int w, int h, int comp, int req_comp);
         Dynamic to_image_dataf(Array<float> floats, int w, int h, int comp, int req_comp);
         Array<unsigned char> to_haxe_bytes(unsigned char* image_bytes, int length);
+        Array<unsigned char> to_haxe_bytesf(float* image_bytes, int length);
         Array<float> to_haxe_floats(float* image_floats, int length);
         Dynamic to_image_info(int w, int h, int comp);
 
@@ -103,9 +104,9 @@ namespace linc {
             if(req_comp == 0)
                 req_comp = comp;
 
-            Array<float> floats = to_haxe_floats(image_floats, w * h * req_comp);
+            Array<unsigned char> floatbytes = to_haxe_bytesf(image_floats, w * h * req_comp);
 
-            return to_image_dataf(floats, w, h, comp, req_comp);
+            return to_image_data(floatbytes, w, h, comp, req_comp);
 
         } //loadf
 
@@ -141,18 +142,20 @@ namespace linc {
 
             return haxe_bytes;
 
-        } //to_haxe_floats
-        Array<float> to_haxe_floats(float* image_floats, int length) {
+        }
 
-            Array<float> haxe_floats = new Array_obj<float>(length,0);
+        Array<unsigned char> to_haxe_bytesf(float* image_bytes, int length) {
+            length = length * 4;
+            Array<unsigned char> haxe_bytes = new Array_obj<unsigned char>(length,0);
 
-            memcpy(haxe_floats->GetBase(), image_floats, length);
+            memcpy(haxe_bytes->GetBase(), image_bytes, length);
 
-            stbi_image_free(image_floats);
+            stbi_image_free(image_bytes);
 
-            return haxe_floats;
+            return haxe_bytes;
 
-        } //to_haxe_floats
+        }
+    
 
         Dynamic to_image_info(int w, int h, int comp) {
 
@@ -179,20 +182,6 @@ namespace linc {
             return result;
 
         } //to_image_data
-
-        Dynamic to_image_dataf(Array<float> floats, int w, int h, int comp, int req_comp) {
-
-            hx::Anon result = hx::Anon_obj::Create();
-
-                result->Add(HX_CSTRING("w"), w);
-                result->Add(HX_CSTRING("h"), h);
-                result->Add(HX_CSTRING("comp"), comp);
-                result->Add(HX_CSTRING("req_comp"), req_comp);
-                result->Add(HX_CSTRING("pixels"), floats);
-
-            return result;
-
-        } //to_image_dataf
 
     } //stb_image namespace
 
