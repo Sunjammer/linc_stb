@@ -134,7 +134,7 @@ namespace linc {
         //note this calls stb_image_free on the image_bytes
         Array<unsigned char> to_haxe_bytes(unsigned char* image_bytes, int length) {
 
-            Array<unsigned char> haxe_bytes = new Array_obj<unsigned char>(length,length);
+            Array<unsigned char> haxe_bytes = Array_obj<unsigned char>::__new(length);
 
             memcpy(haxe_bytes->GetBase(), image_bytes, length);
 
@@ -146,7 +146,7 @@ namespace linc {
 
         Array<unsigned char> to_haxe_bytesf(float* image_bytes, int length) {
             length = length * 4;
-            Array<unsigned char> haxe_bytes = new Array_obj<unsigned char>(length,0);
+            Array<unsigned char> haxe_bytes = Array_obj<unsigned char>::__new(length);
 
             memcpy(haxe_bytes->GetBase(), image_bytes, length);
 
