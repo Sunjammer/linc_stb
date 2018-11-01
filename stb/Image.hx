@@ -39,13 +39,13 @@ extern class Image {
     //load
 
         @:native("linc::stb_image::load")
-        static function load(filename:String, req_comp:Int = 0) : StbImageData;
+        static function load(filename:String, req_comp:Int = 0, outBytes:BytesData) : StbImageData;
 
         @:native("linc::stb_image::loadf")
-        static function loadf(filename:String, req_comp:Int = 0) : StbImageData;
+        static function loadf(filename:String, req_comp:Int = 0, outBytes:BytesData) : StbImageData;
 
         @:native("linc::stb_image::load_from_memory")
-        static function load_from_memory(bytes:BytesData, length:Int, req_comp:Int = 0) : StbImageData;
+        static function load_from_memory(bytes:BytesData, length:Int, req_comp:Int = 0, outBytes:BytesData) : StbImageData;
 
         // load_from_callbacks
 

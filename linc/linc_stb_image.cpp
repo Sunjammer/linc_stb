@@ -15,9 +15,9 @@ namespace linc {
 
         Dynamic to_image_data(Array<unsigned char> bytes, int w, int h, int comp, int req_comp);
         Dynamic to_image_dataf(Array<float> floats, int w, int h, int comp, int req_comp);
-        Array<unsigned char> to_haxe_bytes(unsigned char* image_bytes, int length);
-        Array<unsigned char> to_haxe_bytesf(float* image_bytes, int length);
-        Array<float> to_haxe_floats(float* image_floats, int length);
+        Array<unsigned char> to_haxe_bytes(unsigned char* image_bytes, int length, Array<unsigned char> outBytes);
+        Array<unsigned char> to_haxe_bytesf(float* image_bytes, int length, Array<unsigned char> outBytes);
+        Array<float> to_haxe_floats(float* image_floats, int length, Array<unsigned char> outBytes);
         Dynamic to_image_info(int w, int h, int comp);
 
             //fudge this to cause a recompile when stb_image.h updates
@@ -69,7 +69,7 @@ namespace linc {
 
         //load
 
-        Dynamic load(char const *filename, int req_comp) {
+        Dynamic load(char const *filename, int req_comp, Array<unsigned char> outBytes) {
 
             int w = 0;
             int h = 0;
@@ -82,16 +82,16 @@ namespace linc {
             if(req_comp == 0)
                 req_comp = comp;
 
-            Array<unsigned char> bytes = to_haxe_bytes(image_bytes, w * h * req_comp);
+            to_haxe_bytes(image_bytes, w * h * req_comp, outBytes);
 
-            return to_image_data(bytes, w, h, comp, req_comp);
+            return to_image_data(outBytes, w, h, comp, req_comp);
 
         } //load
 
         
         //loadf
 
-        Dynamic loadf(char const *filename, int req_comp) {
+        Dynamic loadf(char const *filename, int req_comp, Array<unsigned char> outBytes) {
 
             int w = 0;
             int h = 0;
@@ -104,13 +104,13 @@ namespace linc {
             if(req_comp == 0)
                 req_comp = comp;
 
-            Array<unsigned char> floatbytes = to_haxe_bytesf(image_floats, w * h * req_comp);
+            to_haxe_bytesf(image_floats, w * h * req_comp, outBytes);
 
-            return to_image_data(floatbytes, w, h, comp, req_comp);
+            return to_image_data(outBytes, w, h, comp, req_comp);
 
         } //loadf
 
-        Dynamic load_from_memory(Array<unsigned char> src_bytes, int src_length, int req_comp) {
+        Dynamic load_from_memory(Array<unsigned char> src_bytes, int src_length, int req_comp, Array<unsigned char> outBytes) {
 
             int w = 0;
             int h = 0;
@@ -123,36 +123,36 @@ namespace linc {
             if(req_comp == 0)
                 req_comp = comp;
 
-            Array<unsigned char> bytes = to_haxe_bytes(image_bytes, w * h * req_comp);
+            to_haxe_bytes(image_bytes, w * h * req_comp, outBytes);
 
-            return to_image_data(bytes, w, h, comp, req_comp);
+            return to_image_data(outBytes, w, h, comp, req_comp);
 
         } //load_from_memory
 
     //helpers
 
         //note this calls stb_image_free on the image_bytes
-        Array<unsigned char> to_haxe_bytes(unsigned char* image_bytes, int length) {
+        Array<unsigned char> to_haxe_bytes(unsigned char* image_bytes, int length, Array<unsigned char> outBytes) {
 
-            Array<unsigned char> haxe_bytes = Array_obj<unsigned char>::__new(length);
+            outBytes->resize(length);
 
-            memcpy(haxe_bytes->GetBase(), image_bytes, length);
+            memcpy(outBytes->GetBase(), image_bytes, length);
 
             stbi_image_free(image_bytes);
 
-            return haxe_bytes;
+            return outBytes;
 
         }
 
-        Array<unsigned char> to_haxe_bytesf(float* image_bytes, int length) {
+        Array<unsigned char> to_haxe_bytesf(float* image_bytes, int length, Array<unsigned char> outBytes) {
             length = length * 4;
-            Array<unsigned char> haxe_bytes = Array_obj<unsigned char>::__new(length);
+            outBytes->resize(length);
 
-            memcpy(haxe_bytes->GetBase(), image_bytes, length);
+            memcpy(outBytes->GetBase(), image_bytes, length);
 
             stbi_image_free(image_bytes);
 
-            return haxe_bytes;
+            return outBytes;
 
         }
     
