@@ -47,6 +47,9 @@ extern class Image {
         @:native("linc::stb_image::load_from_memory")
         static function load_from_memory(bytes:BytesData, length:Int, req_comp:Int = 0, outBytes:BytesData) : StbImageData;
 
+        @:native("linc::stb_image::loadf_from_memory")
+        static function loadf_from_memory(bytes:BytesData, length:Int, req_comp:Int = 0, outBytes:BytesData) : StbImageData;
+
         // load_from_callbacks
 
     //error

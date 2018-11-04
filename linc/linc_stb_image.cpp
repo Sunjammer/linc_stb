@@ -129,6 +129,25 @@ namespace linc {
 
         } //load_from_memory
 
+        Dynamic loadf_from_memory(Array<unsigned char> src_bytes, int src_length, int req_comp, Array<unsigned char> outBytes) {
+
+            int w = 0;
+            int h = 0;
+            int comp = 0;
+
+            float* image_bytes = stbi_loadf_from_memory(&src_bytes[0], src_length, &w, &h, &comp, req_comp);
+
+            if(!image_bytes) return null();
+            
+            if(req_comp == 0)
+                req_comp = comp;
+
+            to_haxe_bytesf(image_bytes, w * h * req_comp, outBytes);
+
+            return to_image_data(outBytes, w, h, comp, req_comp);
+
+        } //load_from_memoryf
+
     //helpers
 
         //note this calls stb_image_free on the image_bytes
